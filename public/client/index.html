@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Pioneer</title>
+    <script src="../module/perlin.js"></script>
+    <script src="../module/vector.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        var _Stage;
+
+        var _Map;
+        var _Tile;
+
+        // Extra
+        var CLASS = {};
+        var SETTING = {};
+        var DRAW = {};
+
+        // Module
+        /*class Module {
+        }*/
+
+        // Class
+        CLASS.Cell = class {
+            constructor() {
+                this.vector;
+                this.terrain;
+                this.height;
+            }
+        };
+
+        CLASS.Stage = class {
+            constructor() {
+                this.name;
+                this.canvas;
+                this.ctx;
+            }
+
+            setting(id) {
+                this.canvas = document.getElementById(id);
+                this.ctx = this.canvas.getContext('2d');
+            }
+
+            setSize(x, y) {
+                // Resize
+                this.ctx.canvas.width = x;
+                this.ctx.canvas.height = y;
+            }
+        };
+
+        // SETTING
+        SETTING.Init = function() {
+            // Stage
+            _Stage = {
+                win : new CLASS.Stage()
+            };
+
+            // Game
+            _Map = {
+                map : [],
+                noise : {},
+                size : new Vector(200, 200)
+            };
+
+            _Tile = {
+                size : new Vector(4, 4)
+            };
+
+            // Setting
+            let stage = _Stage.win;
+
+            stage.name = 'game';
+            stage.setting('canvas');
+            stage.setSize(window.innerWidth, window.innerHeight);
+        };
+
+        SETTING.Map = function() {
+            _Map.noise.main = [];
+            /*_Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());*/
+
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+            _Map.noise.main.push(Math.random());
+
+            for (var y = 0; y < _Map.size.y; y++){
+                _Map.map.push([]);
+
+                for (var x = 0; x < _Map.size.x; x++){
+                    var cell = new CLASS.Cell();
+
+                    cell.vector = new Vector(x, y);
+                    cell.height = 0;
+
+                    // Perlin Noise
+                    //var size = [160,140,120,100,80,60,40,20,10];
+                    var size = [160,140,120,100,80,60,40,20,10];
+                    for (var s = 0; s < _Map.noise.main.length; s++){
+                        noise.seed(_Map.noise.main[s]);
+
+                        var value = noise.simplex2(x / size[s], y / size[s]);
+                        cell.height += (value+0.08) * 2 / (s+1);
+                    }
+
+                    _Map.map[y].push(cell);
+                }
+            }
+        };
+
+        SETTING.Main = function() {
+            SETTING.Init();
+            SETTING.Map();
+        };
+
+        // Draw
+        DRAW.Map = function() {
+            var stage = _Stage.win;
+            var ctx = stage.ctx;
+
+            var tsize = _Tile.size
+
+            for (var y = 0; y < _Map.size.y; y++){
+                for (var x = 0; x < _Map.size.x; x++){
+                    var cell = _Map.map[y][x];
+                    var pos = new Vector(x, y).Mul(tsize.x, tsize.y);
+                    var color = Math.floor(cell.height*80);
+
+                    ctx.fillStyle = 'rgb('+color+', '+color+', '+color+')';
+                    ctx.fillRect(pos.x, pos.y, tsize.x, tsize.y);
+                }
+            }
+        };
+
+        DRAW.Main = function() {
+            DRAW.Map();
+        };
+
+        // Start
+        window.onload = function() {
+            SETTING.Main();
+            DRAW.Main();
+        };
+    </script>
+</body>
+</html>

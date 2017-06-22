@@ -1,0 +1,10 @@
+{
+    "name" : "Penta",
+    "version" : "0.1.0",
+    "main" : "index.js",
+    "description" : "Game",
+    "dependencies" : {
+        "express" : "4.15.x",
+        "socket.io" : "1.7.x"
+    }
+}
